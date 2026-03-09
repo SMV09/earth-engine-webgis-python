@@ -12,3 +12,17 @@ Video 5 — Backend API for Satellite Processing
 Video 6 — Frontend Integration  
 Video 7 — Interactive Dashboard Controls  
 Video 8 — Map Visualization  
+
+## Installation
+
+Clone the repository
+
+git clone https://github.com/SMV09/earth-engine-webgis-python.git
+
+Move into the project folder
+
+cd earth-engine-webgis-python
+
+Install required libraries
+
+pip install -r requirements.txt
