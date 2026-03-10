@@ -3,7 +3,7 @@ import time
 
 def initialize_ee():
     # Use the Project ID (the one with numbers)
-    PROJECT_ID = "climate-tech-487705"
+    PROJECT_ID = "YOUR_PROJECT_ID"
    
     print("BOOT: Starting WebGIS Engine...")
     t0 = time.time()
@@ -52,4 +52,5 @@ initialize_ee() # <--- ADD THIS LINE HERE
 
 ROI = ee.Geometry.Rectangle([75.8, 10.4, 76.5, 11.0])
 SCALE = 30
+
 MAX_PIXELS = 1e13
