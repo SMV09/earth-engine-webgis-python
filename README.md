@@ -28,23 +28,11 @@ Install required libraries
 pip install -r requirements.txt
 
 
-## Project Structure
-
-earth-engine-webgis-python
-
-video01_course_overview
-video02_gee_cloud_setup
-video03_local_environment_setup
-video04_earth_engine_handshake
-video05_backend_api
-video06_frontend_integration
-video07_dashboard_controls
-video08_map_visualization
 
 ## Tutorial Series
 
 Watch the full tutorial series on YouTube:
 
-YouTube link will be added after the first video release.
+YouTube link will be added after every video release in this playlist: https://www.youtube.com/watch?v=0uVlA0Y8WCw&list=PLFSO_6k8ikwZm5l7M6Knsk3J7cjRUuL0X
 
 
