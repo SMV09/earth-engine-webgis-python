@@ -19,38 +19,3 @@ def initialize_ee():
             ee.Initialize(project=PROJECT_ID)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ===============================
-# App Constants (Wrapped in a clasS or function)
-# ===============================
-
-
-def get_roi():
-    """Returns the ROI only after initialization is done"""
-    return ee.Geometry.Rectangle([75.8, 10.4, 76.5, 11.0])
-
-
-# Alternatively, if app.py expects variables,
-# you MUST call initialize_ee() inside config.py itself:
-
-
-initialize_ee() # <--- ADD THIS LINE HERE
-
-
-ROI = ee.Geometry.Rectangle([75.8, 10.4, 76.5, 11.0])
-SCALE = 30
-
-MAX_PIXELS = 1e13
