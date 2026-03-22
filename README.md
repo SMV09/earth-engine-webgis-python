@@ -6,7 +6,7 @@ Build a WebGIS application using Google Earth Engine, Google cloud, Python, Flas
 
 Roadmap (Phase 1)
 
-Video 1 — Course Overview/Roadmap
+Video 1 — Course Overview/Roadmap 
 Video 2 — Google Earth Engine & Cloud Setup  
 Video 3 — Local Development Environment (Python, VS code and project structure setup)  
 Video 4 — Earth Engine Python Handshake  
@@ -15,8 +15,7 @@ Upcoming videos Core Web App (Phase 2)
 
 Video 5 — Backend API for Satellite Processing  
 Video 6 — Frontend Integration  
-Video 7 — Interactive Dashboard Controls  
-Video 8 — Map Visualization  
+Video 7 — Map Visualization  
 
 ## Installation
 
