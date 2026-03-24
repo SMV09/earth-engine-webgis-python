@@ -1,0 +1,74 @@
+from flask import Flask, jsonify, request
+import ee
+
+from config import initialize_ee, ROI, SCALE, MAX_PIXELS
+
+# --------------------------------
+# Flask App
+# --------------------------------
+
+app = Flask(__name__)
+
+
+# ---------------- HOME ----------------
+
+@app.route("/")
+def home():
+    return "🌍 WebGIS Backend API Running"
+
+# --------SATELLITE DATA UTILS ---------
+
+def get_landsat(start,end):
+
+    return (ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+            .filterBounds(ROI)
+            .filterDate(start,end)
+            .filter(ee.Filter.lt("CLOUD_COVER",20)))
+
+
+def scale(img):
+
+    optical = img.select("SR_B.*").multiply(0.0000275).add(-0.2)
+    return img.addBands(optical,None,True)
+
+
+# --------------------------------
+# NDVI API
+# --------------------------------
+
+@app.route("/get_stats")
+def get_stats():
+
+    start = request.args.get("start")
+    end = request.args.get("end")
+
+    if not start or not end:
+        return jsonify({"error": "Please provide start and end date"}), 400
+
+    img = scale(get_landsat(start, end).median()).clip(ROI)
+
+    # NDVI
+    ndvi = img.normalizedDifference(["SR_B5", "SR_B4"]).rename("ndvi")
+
+    # Mean NDVI
+    stats = ndvi.reduceRegion(
+        reducer=ee.Reducer.mean(),
+        geometry=ROI,
+        scale=SCALE,
+        maxPixels=MAX_PIXELS
+    )
+
+    ndvi_value = stats.get("ndvi").getInfo()
+
+    return jsonify({
+        "start": start,
+        "end": end,
+        "mean_ndvi": ndvi_value
+    })
+
+# --------------------------------
+# Run Server
+# --------------------------------
+
+if __name__ == "__main__":
+    app.run(debug=True)
