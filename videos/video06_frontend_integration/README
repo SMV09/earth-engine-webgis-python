@@ -1,1 +1,15 @@
+Frontend Integration
 
+
+In this sixth video of the series, we connect the frontend to our backend API and build a simple WebGIS interface using Google Earth Engine.
+
+Users can select a date range and request satellite data directly from the browser. The frontend sends this request to the Flask backend, which processes Landsat imagery using the Google Earth Engine Python API and returns mean NDVI value.
+
+This is an important step where we move from backend-only processing to an interactive WebGIS application.
+
+What you will learn:
+• to build a simple HTML frontend  
+• to take user input using date selectors  
+• to use JavaScript Fetch API  
+• to connect frontend with Flask backend  
+• to retrieve and display NDVI results for a ROI from Google Earth Engine
