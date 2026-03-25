@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>GEE WebGIS</title>
+
+<style>
+
+body{
+  font-family: Arial, sans-serif;
+  margin: 30px;
+}
+
+.panel{
+  margin-bottom: 15px;
+}
+
+#stats{
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+
+button{
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>🌍 WebGIS Frontend</h2>
+
+<!-- ================= INPUT PANEL ================= -->
+
+<div class="panel">
+
+Start:
+<input type="date" id="start">
+
+End:
+<input type="date" id="end">
+
+<button onclick="analyze()">Analyze</button>
+
+</div>
+
+<!-- ================= OUTPUT ================= -->
+
+<div id="stats">
+<b>Results will appear here...</b>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+
+// =====================================================
+// Analyze (Frontend → Backend)
+// =====================================================
+
+function analyze(){
+
+  const start = document.getElementById("start").value;
+  const end   = document.getElementById("end").value;
+
+  if(!start || !end){
+    alert("Select dates first");
+    return;
+  }
+
+  // Call backend API
+  fetch(`/get_stats?start=${start}&end=${end}`)
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if(data.error){
+      alert(data.error);
+      return;
+    }
+
+    // Display result
+    document.getElementById("stats").innerHTML =
+      `<b>Start:</b> ${data.start}<br>
+       <b>End:</b> ${data.end}<br>
+       <b>Mean NDVI:</b> ${data.mean_ndvi}`;
+
+  })
+
+  .catch(err => {
+    console.error(err);
+    alert("Server error");
+  });
+
+}
+
+</script>
+
+</body>
+</html>
