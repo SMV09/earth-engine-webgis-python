@@ -11,11 +11,17 @@ Video 2 — Google Earth Engine & Cloud Setup
 Video 3 — Local Development Environment (Python, VS code and project structure setup)  
 Video 4 — Earth Engine Python Handshake  
 
-Upcoming videos Core Web App (Phase 2)
+Core Web App (Phase 2)
 
 Video 5 — Backend API for Satellite Processing  
 Video 6 — Frontend Integration  
 Video 7 — Map Visualization  
+
+Upcoming videos Advanced Analytics (Phase 3)
+
+Video 8 - Geospatial Analytics in webGIS
+Video 9 - Time-Series Analysis to monitor water and vegetation health
+video 10 - ROI, Export CSV & UI/UX Polish
 
 ## Installation
 
