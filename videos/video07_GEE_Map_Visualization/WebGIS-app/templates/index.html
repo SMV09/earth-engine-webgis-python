@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>GEE WebGIS</title>
+
+<!-- ================= LEAFLET ================= -->
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- ================= STYLE ================= -->
+
+<style>
+
+body{
+  font-family: Arial, sans-serif;
+  margin: 30px;
+}
+
+.panel{
+  margin-bottom: 15px;
+}
+
+#stats{
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+
+#map{
+  height: 400px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+}
+
+button{
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>🌍 WebGIS Frontend & Map visualization </h2>
+
+<!-- ================= INPUT PANEL ================= -->
+
+<div class="panel">
+
+Start:
+<input type="date" id="start">
+
+End:
+<input type="date" id="end">
+
+<button onclick="analyze()">Analyze</button>
+
+</div>
+
+<!-- ================= OUTPUT ================= -->
+
+<div id="stats">
+<b>Results will appear here...</b>
+</div>
+
+<!-- ================= MAP ================= -->
+
+<div id="map"></div>
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+
+// ================= MAP INITIALIZATION =================
+
+const map = L.map("map").setView([10.55, 76.25], 9);
+
+// Base map (OpenStreetMap)
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    attribution: "© OpenStreetMap"
+  }
+).addTo(map);
+
+
+// ================= GLOBAL LAYERS =================
+
+let rgbLayer = null;
+let ndviLayer = null;
+let layerControl = null;
+
+
+// =====================================================
+// Analyze (Frontend → Backend)
+// =====================================================
+
+function analyze(){
+
+  const start = document.getElementById("start").value;
+  const end   = document.getElementById("end").value;
+
+  if(!start || !end){
+    alert("Select dates first");
+    return;
+  }
+
+  // Call backend API
+  fetch(`/get_stats?start=${start}&end=${end}`)
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if(data.error){
+      alert(data.error);
+      return;
+    }
+
+    // ================= TEXT OUTPUT =================
+
+    document.getElementById("stats").innerHTML =
+      `<b>Start:</b> ${data.start}<br>
+       <b>End:</b> ${data.end}<br>
+       <b>Mean NDVI:</b> ${data.mean_ndvi}`;
+
+
+    // ================= REMOVE OLD LAYERS =================
+
+    if(rgbLayer) map.removeLayer(rgbLayer);
+    if(ndviLayer) map.removeLayer(ndviLayer);
+
+
+    // ================= ADD NEW LAYERS =================
+
+    rgbLayer  = L.tileLayer(data.rgb);
+    ndviLayer = L.tileLayer(data.ndvi);
+
+    // Show RGB by default
+    rgbLayer.addTo(map);
+
+
+    // ================= LAYER CONTROL =================
+
+    if(layerControl){
+      map.removeControl(layerControl);
+    }
+
+    layerControl = L.control.layers(null, {
+      "RGB": rgbLayer,
+      "NDVI": ndviLayer
+    }).addTo(map);
+
+  })
+
+  .catch(err => {
+    console.error(err);
+    alert("Server error");
+  });
+
+}
+
+</script>
+
+</body>
+</html>
