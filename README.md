@@ -20,8 +20,10 @@ Video 7 — Map Visualization
 Upcoming videos Advanced Analytics (Phase 3)
 
 Video 8 - Geospatial Analytics in webGIS
+
 Video 9 - Time-Series Analysis to monitor water and vegetation health
-video 10 - ROI, Export CSV & UI/UX Polish
+
+Video 10 - ROI, Export CSV & UI/UX Polish
 
 ## Installation
 
