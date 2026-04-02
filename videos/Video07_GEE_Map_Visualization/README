@@ -1,1 +1,11 @@
+In this, we upgrade our WebGIS application by adding interactive map visualization using Google Earth Engine and Leaflet.js.
+Here we will display satellite imagery directly on a web map.
 
+🔍 What you will learn:
+
+How to display satellite data on a web map
+Understanding RGB visualization (true color imagery)
+Understanding NDVI visualization (vegetation health)
+How Google Earth Engine generates tile layers
+How to integrate those tiles into Leaflet maps
+How frontend and backend connect for map rendering
