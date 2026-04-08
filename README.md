@@ -43,6 +43,5 @@ pip install -r requirements.txt
 
 Watch the full tutorial series on YouTube:
 
-YouTube link will be added after every video release in this playlist: https://www.youtube.com/watch?v=0uVlA0Y8WCw&list=PLFSO_6k8ikwZm5l7M6Knsk3J7cjRUuL0X
-
+YouTube link will be added after every video release in this playlist: https://youtube.com/playlist?list=PLFSO_6k8ikwZm5l7M6Knsk3J7cjRUuL0X&si=yK3kFdHZ3Bit8q1K
 
