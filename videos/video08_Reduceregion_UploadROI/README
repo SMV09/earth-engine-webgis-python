@@ -1,1 +1,16 @@
+In this video, we will understand how to extract meaningful information from satellite data.
+So far, we’ve been visualizing maps like RGB and NDVI using leaflet. But in real-world applications, we need to know about numerical insights.
 
+In this video, you will learn:
+
+✔ What is reduceRegion() in Google Earth Engine
+✔ How pixel values are converted into statistics like mean NDVI
+✔ How to upload a custom Region of Interest (ROI) using GeoJSON
+✔ How frontend and backend interact in a WebGIS system
+✔ How results are displayed dynamically in the browser
+
+We also extend WebGIS application, where users can upload their own ROI and analyze satellite data interactively.
+
+This is a key concept for building real-world geospatial applications.
+
+👉 In the next video, we will explore time-series analysis and export results as CSV.
