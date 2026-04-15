@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>GEE WebGIS</title>
+
+<link rel="stylesheet"
+ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+body{
+  font-family: Arial;
+  margin: 30px;
+}
+.panel{
+  margin-bottom: 15px;
+}
+#stats{
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+#map{
+  height: 400px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🌍 WebGIS with ROI & ReduceRegion</h2>
+
+<!-- INPUT -->
+<div class="panel">
+Start:
+<input type="date" id="start">
+End:
+<input type="date" id="end">
+<button onclick="analyze()">Analyze</button>
+</div>
+
+<!-- ROI -->
+<div class="panel">
+Upload ROI (GeoJSON):
+<input type="file" id="file">
+<button onclick="uploadROI()">Upload</button>
+</div>
+
+<!-- OUTPUT -->
+<div id="stats">
+<b>Results will appear here...</b>
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<script>
+
+// ================= MAP =================
+const map = L.map("map").setView([10.55, 76.25], 9);
+
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+).addTo(map);
+
+
+// ================= LAYERS =================
+let rgbLayer, ndviLayer, layerControl, roiLayer;
+
+
+// ================= ANALYZE =================
+function analyze(){
+
+  const start = document.getElementById("start").value;
+  const end   = document.getElementById("end").value;
+
+  if(!start || !end){
+    alert("Select dates first");
+    return;
+  }
+
+  fetch(`/get_stats?start=${start}&end=${end}`)
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if(data.error){
+      alert(data.error);
+      return;
+    }
+
+    document.getElementById("stats").innerHTML =
+      `<b>Start:</b> ${data.start}<br>
+       <b>End:</b> ${data.end}<br>
+       <b>Mean NDVI:</b> ${data.mean_ndvi}`;
+
+    if(rgbLayer) map.removeLayer(rgbLayer);
+    if(ndviLayer) map.removeLayer(ndviLayer);
+
+    rgbLayer  = L.tileLayer(data.rgb);
+    ndviLayer = L.tileLayer(data.ndvi);
+
+    rgbLayer.addTo(map);
+
+    if(layerControl){
+      map.removeControl(layerControl);
+    }
+
+    layerControl = L.control.layers(null, {
+      "RGB": rgbLayer,
+      "NDVI": ndviLayer
+    }).addTo(map);
+
+  });
+
+}
+
+
+// ================= ROI UPLOAD =================
+function uploadROI(){
+
+  const file = document.getElementById("file").files[0];
+
+  if(!file){
+    alert("Select a file");
+    return;
+  }
+
+  const form = new FormData();
+  form.append("file", file);
+
+  fetch("/upload_roi", {
+    method: "POST",
+    body: form
+  })
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if(data.error){
+      alert(data.error);
+      return;
+    }
+
+    alert("ROI updated");
+
+    // Remove old ROI
+    if(roiLayer){
+      map.removeLayer(roiLayer);
+    }
+
+    // Use backend GeoJSON 
+    roiLayer = L.geoJSON(data.geojson, {
+      style: { color: "red", weight: 2, fill: false }
+    }).addTo(map);
+
+    //  Zoom to ROI
+    if(data.bounds){
+      map.fitBounds([
+        [data.bounds[0][0], data.bounds[0][1]],
+        [data.bounds[1][0], data.bounds[1][1]]
+      ]);
+    }
+
+  })
+
+  .catch(err => {
+    console.error(err);
+    alert("Upload failed");
+  });
+
+}
+
+</script>
+
+</body>
+</html>
