@@ -1,1 +1,10 @@
+Here, we are adding NDVI temporal trends and CSV export functionality.
 
+You will learn how to:
+
+✔ Build a 5-year NDVI time series using Earth Engine
+✔ Calculate monthly mean NDVI values
+✔ Display NDVI trends in a Chart.js line chart
+✔ Connect Flask backend with frontend chart visualization
+✔ Export NDVI values as a CSV file
+✔ Analyze vegetation changes over time for any uploaded ROI
