@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>GEE WebGIS</title>
+
+<link rel="stylesheet"
+ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  font-family: Arial;
+  margin: 30px;
+}
+.panel{
+  margin-bottom: 15px;
+}
+#stats{
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+#map{
+  height: 400px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+}
+  #chart-container{
+  margin-top: 20px;
+  width: 100%;
+  height: 400px;
+}
+
+button{
+  padding: 6px 12px;
+  cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🌍 WebGIS with Temporal Trends and CSV Export Dashboard</h2>
+
+<!-- INPUT -->
+<div class="panel">
+Start:
+<input type="date" id="start">
+End:
+<input type="date" id="end">
+<button onclick="analyze()">Analyze</button>
+</div>
+
+<!-- ROI -->
+<div class="panel">
+Upload ROI (GeoJSON):
+<input type="file" id="file">
+<button onclick="uploadROI()">Upload</button>
+</div>
+
+<!-- OUTPUT -->
+<div id="stats">
+<b>Results will appear here...</b>
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<h3>NDVI Temporal Trend (Last 5 Years)</h3>
+
+<button onclick="downloadCSV()">
+Download CSV
+</button>
+
+<div id="chart-container">
+  <canvas id="chart"></canvas>
+</div>
+
+<script>
+
+// ================= MAP =================
+const map = L.map("map").setView([10.55, 76.25], 9);
+
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+).addTo(map);
+
+
+// ================= LAYERS =================
+let rgbLayer, ndviLayer, layerControl, roiLayer;
+let chart = null;
+let lastEndDate = null;
+
+
+// ================= ANALYZE =================
+function analyze(){
+
+  const start = document.getElementById("start").value;
+  const end   = document.getElementById("end").value;
+
+  if(!start || !end){
+    alert("Select dates first");
+    return;
+  }
+
+  fetch(`/get_stats?start=${start}&end=${end}`)
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if(data.error){
+      alert(data.error);
+      return;
+    }
+
+    document.getElementById("stats").innerHTML =
+      `<b>Start:</b> ${data.start}<br>
+       <b>End:</b> ${data.end}<br>
+       <b>Mean NDVI:</b> ${data.mean_ndvi}`;
+
+    if(rgbLayer) map.removeLayer(rgbLayer);
+    if(ndviLayer) map.removeLayer(ndviLayer);
+
+    rgbLayer  = L.tileLayer(data.rgb);
+    ndviLayer = L.tileLayer(data.ndvi);
+
+    rgbLayer.addTo(map);
+
+    if(layerControl){
+      map.removeControl(layerControl);
+    }
+
+    layerControl = L.control.layers(null, {
+      "RGB": rgbLayer,
+      "NDVI": ndviLayer
+    }).addTo(map);
+
+    lastEndDate = end;
+    loadChart(end);
+
+  });
+
+}
+
+
+// ================= ROI UPLOAD =================
+function uploadROI(){
+
+  const file = document.getElementById("file").files[0];
+
+  if(!file){
+    alert("Select a file");
+    return;
+  }
+
+  const form = new FormData();
+  form.append("file", file);
+
+  fetch("/upload_roi", {
+    method: "POST",
+    body: form
+  })
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    if(data.error){
+      alert(data.error);
+      return;
+    }
+
+    alert("ROI updated");
+
+    // Remove old ROI
+    if(roiLayer){
+      map.removeLayer(roiLayer);
+    }
+
+    // ✅ Use backend GeoJSON (better consistency)
+    roiLayer = L.geoJSON(data.geojson, {
+      style: { color: "red", weight: 2, fill: false }
+    }).addTo(map);
+
+    // ✅ Zoom to ROI
+    if(data.bounds){
+      map.fitBounds([
+        [data.bounds[0][0], data.bounds[0][1]],
+        [data.bounds[1][0], data.bounds[1][1]]
+      ]);
+    }
+
+  })
+
+  .catch(err => {
+    console.error(err);
+    alert("Upload failed");
+  });
+
+}
+
+// ===============loadchart=============
+
+function loadChart(end){
+
+  fetch(`/timeseries?end=${end}`)
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    const raw = data.features.map(f => ({
+      date: f.properties.date,
+      ndvi: f.properties.NDVI !== null
+            ? Number(f.properties.NDVI)
+            : null
+    }));
+
+    const dates = raw.map(d => d.date);
+    const ndvi  = raw.map(d => d.ndvi);
+
+
+    if(chart){
+      chart.destroy();
+    }
+
+
+    chart = new Chart(
+      document.getElementById("chart"),
+      {
+        type: "line",
+
+        data: {
+          labels: dates,
+          datasets: [
+            {
+              label: "NDVI (Monthly Mean)",
+              data: ndvi,
+              borderColor: "green",
+              spanGaps: true
+            }
+          ]
+        },
+
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+
+          scales: {
+            y: {
+              min: -1,
+              max: 1,
+              title: {
+                display: true,
+                text: "NDVI Value"
+              }
+            }
+          }
+        }
+      }
+    );
+  });
+}
+
+//============DownloadCSV========
+function downloadCSV(){
+
+  if(!lastEndDate){
+    alert("Run analysis first");
+    return;
+  }
+
+  window.open(`/download_csv?end=${lastEndDate}`);
+}
+
+</script>
+
+</body>
+</html>
