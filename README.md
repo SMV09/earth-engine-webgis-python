@@ -18,9 +18,13 @@ Video 5 — Backend API for Satellite Processing
 Video 6 — Frontend Integration  
 Video 7 — Map Visualization  
 
-Upcoming videos Advanced Analytics (Phase 3)
+GEE Advanced Analytics (Phase 3)
 
-Video 8 - Geospatial Analytics in WebGIS
+Video 8 - ReduceRegion Explained + ROI Upload
+Video 9 - NDVI Temporal Trends & CSV Export in WebGIS
+
+Cloud Deployment (Phase 4)
+Video 10 - Enable Cloud Run, Artifact Registry, Billing
 
 
 ## Installation
