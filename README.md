@@ -26,6 +26,7 @@ Video 9 - NDVI Temporal Trends & CSV Export in WebGIS
 Cloud Deployment (Phase 4)
 
 Video 10 - Enable Cloud Run, Artifact Registry, Billing
+Video 11 - Google Cloud Service Account & secret manager setup
 
 
 ## Installation
