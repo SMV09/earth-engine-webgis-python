@@ -1,0 +1,3 @@
+In this video, we learn how to securely configure Google Cloud authentication for deploying a WebGIS application using Google Earth Engine and Cloud Run. We understand how cloud applications securely communicate with Google Cloud services using Service Accounts, IAM permissions, and Secret Manager.
+
+This video focuses on building a secure cloud architecture before deploying the WebGIS application to Cloud Run.
