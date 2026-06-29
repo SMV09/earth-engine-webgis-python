@@ -1,0 +1,8 @@
+In this video, we prepare our Google Cloud environment to deploy the WebGIS application. We will enable billing and activate the required cloud services like Cloud Run and Artifact Registry. Initially, we leverage the Free Tier setup, transitioning to pay-as-you-go billing afterward. These cloud services are very low-cost for this type of WebGIS app. I will discuss specific cost management and budget optimization strategies in Phase 5 to address any concerns.
+
+If you followed the earlier videos, we already built our backend, frontend, and Earth Engine processing. Now, we are moving everything to the cloud. 
+🔹 What you’ll learn:
+✔ How to enable billing in Google Cloud
+✔ How to enable Cloud Run API
+✔ How to enable Artifact Registry API
+✔ Preparing the project for deployment
