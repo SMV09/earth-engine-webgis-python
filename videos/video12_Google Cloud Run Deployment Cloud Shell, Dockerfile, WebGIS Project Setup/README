@@ -1,0 +1,7 @@
+In this video, we prepare our WebGIS application for deployment on Google Cloud Run.
+
+You will learn how to upload your project to Google Cloud Shell, install the required Python libraries, test the application in the cloud environment, and update the project files required for cloud deployment.
+
+We also explain how the Dockerfile works, why Gunicorn is required for production deployment, and how config.py securely initializes Google Earth Engine using Secret Manager.
+
+By the end of this video, your WebGIS application will be fully prepared for containerization and deployment to Google Cloud Run.
