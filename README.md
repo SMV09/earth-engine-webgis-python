@@ -30,6 +30,8 @@ Video 10 - Enable Cloud Run, Artifact Registry, Billing
 
 Video 11 - Google Cloud Service Account & secret manager setup
 
+Video 12 - Google Cloud Run Deployment Cloud Shell, Dockerfile, WebGIS Project Setup
+
 
 ## Installation
 
